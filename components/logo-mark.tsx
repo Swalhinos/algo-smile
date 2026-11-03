@@ -3,7 +3,7 @@ export function LogoMark({ className = 'h-10 w-10' }: { variant?: 'light' | 'dar
     <img
       src="/images/logo-mark-hd.png"
       alt="Algo Smile"
-      className={`object-contain ${className}`}
+      className={`rounded-[22%] bg-white object-contain ${className}`}
     />
   )
 }
