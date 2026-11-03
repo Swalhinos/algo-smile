@@ -1,0 +1,95 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --color-navy: var(--navy);
+  --color-navy-foreground: var(--navy-foreground);
+  --color-sky-soft: var(--sky-soft);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --font-sans: var(--font-inter), 'Inter', sans-serif;
+  --font-serif: var(--font-playfair), 'Playfair Display', serif;
+}
+
+:root {
+  color-scheme: light;
+  /* Light blue #4FC3F7 primary, white secondary, dark navy accent */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.27 0.05 255);
+  --card: oklch(0.99 0.005 230);
+  --card-foreground: oklch(0.27 0.05 255);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.27 0.05 255);
+  --primary: oklch(0.78 0.11 230);
+  --primary-foreground: oklch(0.18 0.05 255);
+  --secondary: oklch(0.96 0.015 230);
+  --secondary-foreground: oklch(0.27 0.05 255);
+  --muted: oklch(0.96 0.015 230);
+  --muted-foreground: oklch(0.5 0.03 250);
+  --accent: oklch(0.27 0.06 255);
+  --accent-foreground: oklch(1 0 0);
+  --navy: oklch(0.27 0.06 255);
+  --navy-foreground: oklch(0.98 0.005 230);
+  --sky-soft: oklch(0.95 0.03 225);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.91 0.02 230);
+  --input: oklch(0.91 0.02 230);
+  --ring: oklch(0.78 0.11 230);
+  --radius: 0.75rem;
+}
+
+/* Brand-driven light theme: keep the same palette even in dark mode */
+.dark,
+:root:not(.light) {
+  color-scheme: light;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Arabic (RTL) typography: IBM Plex Sans Arabic, no letter-spacing */
+[dir='rtl'] body {
+  font-family: var(--font-arabic), 'IBM Plex Sans Arabic', var(--font-inter), sans-serif;
+}
+[dir='rtl'] .font-serif {
+  font-family: var(--font-arabic), 'IBM Plex Sans Arabic', sans-serif;
+}
+[dir='rtl'] .tracking-wide,
+[dir='rtl'] .tracking-widest {
+  letter-spacing: 0;
+}
