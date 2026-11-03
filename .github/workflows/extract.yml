@@ -21,7 +21,7 @@ jobs:
           COUNT=$(find "$SRC" -mindepth 1 -maxdepth 1 | wc -l)
           FIRST=$(find "$SRC" -mindepth 1 -maxdepth 1 | head -n 1)
           if [ "$COUNT" = "1" ] && [ -d "$FIRST" ]; then SRC="$FIRST"; fi
-          cp -a "$SRC"/.
+          cp -a "$SRC"/. .
           rm -f al-qods-nextjs-site.zip
           git restore .github/workflows/extract.yml || true
           git config user.name "github-actions[bot]"
