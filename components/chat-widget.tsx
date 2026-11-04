@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowDown, CalendarCheck, ChevronRight, MapPin, Phone, Send, X } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
 import { CLINIC, type Lang } from '@/lib/translations'
+import { faqAnswer } from '@/lib/chat-faq'
 import { WhatsAppIcon } from '@/components/whatsapp-icon'
 import { FacebookIcon, InstagramIcon } from '@/components/brand-icons'
 
@@ -137,35 +138,24 @@ export function ChatWidget() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, sending, open])
 
-  async function send() {
+  function send() {
     const text = input.trim()
     if (!text || sending) return
     const next: ChatMessage[] = [...messages, { role: 'user', text }]
     setMessages(next)
     setInput('')
     setSending(true)
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        // The static greeting stays local so it never anchors the model's language.
-        // If the visitor typed Arabic script, ask for Arabic so even a fallback
-        // reply comes back in the visitor's language.
-        body: JSON.stringify({
-          messages: next.filter((m) => !m.local),
-          lang: /[\u0600-\u06FF]/.test(text) ? 'ar' : lang,
-        }),
-      })
-      const data = await res.json().catch(() => null)
-      const reply = data && typeof data.reply === 'string' && data.reply.trim() ? data.reply : s.error
-      const cards = Array.isArray(data?.cards) ? (data.cards as CardKind[]).filter((c) => c in CARD_DEFS) : []
-      const answerLang = (['fr', 'ar', 'en'].includes(data?.answerLang) ? data.answerLang : lang) as Lang
-      setMessages([...next, { role: 'assistant', text: reply, cards, answerLang }])
-    } catch {
-      setMessages([...next, { role: 'assistant', text: s.error }])
-    } finally {
+    // Instant local FAQ — no network call, no API, nothing to wait for and
+    // nothing that can fail. A short "typing" pause (the animated dots the
+    // visitor sees) keeps the exchange feeling natural while the answer
+    // still lands in about a second.
+    const answer = faqAnswer(text, lang)
+    const cards = answer.cards.filter((c) => c in CARD_DEFS) as CardKind[]
+    const delay = Math.min(1400, Math.max(650, 450 + answer.text.length * 4))
+    window.setTimeout(() => {
+      setMessages([...next, { role: 'assistant', text: answer.text, cards, answerLang: answer.answerLang }])
       setSending(false)
-    }
+    }, delay)
   }
 
   return (
@@ -257,7 +247,7 @@ export function ChatWidget() {
               className="flex items-center gap-2"
               onSubmit={(e) => {
                 e.preventDefault()
-                void send()
+                send()
               }}
             >
               <input
